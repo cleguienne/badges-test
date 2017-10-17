@@ -1,13 +1,13 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 
 class Star(models.Model):
-    pass
+    user = models.ForeignKey(User, unique=True)
 
 
 class Collector(models.Model):
-    pass
+    user = models.ForeignKey(User, unique=True)
 
 
 class Pioneer(models.Model):
-    pass
+    user = models.ForeignKey(User, unique=True)
