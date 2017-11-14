@@ -9,21 +9,18 @@ from models3d.models import Model
 from badges.models import Collector, Pioneer
 
 @receiver(post_save, sender=Model)
-def model_post_save_collector(sender, **kwargs):
+def model_post_save_collector(sender, created,**kwargs):
     # check a model has been actually created in db
-    if kwargs['created'] == True:
+    if created == True:
         user = sender.user.get_queryset().first()
-        if Collector.objects.filter(user=user).count() == 0:
-            if sender.objects.filter(user=user).count() >= 5:
-                collector_badge = Collector.objects.create(user=user)
-                collector_badge.save()
+        collector_badge, created = Collector.objects.get_or_create(user=user)
+        if sender.objects.filter(user=user).count() >= 5:
+            collector_badge.save()
 
 @receiver(post_save, sender=User)
-def model_post_save_user(sender, **kwargs):
-    user = kwargs.get('instance')
-    date = user.date_joined
+def model_post_save_user(sender, instance, **kwargs):
+    date = instance.date_joined
     limit = timezone.now() - timedelta(days=365)
     if  date <= limit:
-        if Pioneer.objects.filter(user=user).count() == 0:
-            pioneer_badge = Pioneer.objects.create(user=user)
-            pioneer_badge.save()
+        pioneer_badge, created = Pioneer.objects.get_or_create(user=instance)
+        pioneer_badge.save()

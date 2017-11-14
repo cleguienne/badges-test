@@ -14,12 +14,7 @@ class Model(models.Model):
     hits = models.IntegerField(default=0)
 
     def add_visit(self):
-        if self.hits is not None:
-            self.hits += 1
-            if self.hits >= 100:
-                if Star.objects.filter(user=self.user).count() == 0:
-                    star_badge = Star.objects.create(user=self.user)
-                    star_badge.save()
-
-        else:
-            self.hits = 0
+        self.hits += 1
+        if self.hits >= 100:
+            star_badge, created = Star.objects.get_or_create(user=self.user)
+            star_badge.save()

@@ -45,8 +45,8 @@ class ModelDetailView(DetailView):
     slug_field = 'name'
     slug_url_kwarg = 'name'
 
-    def get_context_data(self, **kwargs):
-        context = super(ModelDetailView, self).get_context_data(**kwargs)
+    def get_object(self, queryset=None):
+        context = super(ModelDetailView, self).get_object(queryset)
         self.object.add_visit()
         self.object.save()
         return context
